@@ -1,7 +1,7 @@
 # Scene system components
 
 # Include shader compilation module
-include(${CMAKE_SOURCE_DIR}/cmake/modules/ShaderCompilation.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/ShaderCompilation.cmake)
 
 # Include the generated source list
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_SCENE_sourcelist.cmake)
@@ -130,19 +130,11 @@ target_include_directories(godot_scene
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}  # For generated files
 )
 
 # Compile shaders
-compile_shaders(godot_scene 
-                "${CMAKE_CURRENT_SOURCE_DIR}/shaders" 
-                "${CMAKE_CURRENT_BINARY_DIR}/shaders/generated"
-                ${SHADER_FILES})
-
-# Add binary dir to include path to find generated shader headers
-target_include_directories(godot_scene
-  PRIVATE
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
+compile_shader_directory(godot_scene "shaders" "scene/generated")
 
 # Link dependencies
 target_link_libraries(godot_scene

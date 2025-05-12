@@ -6,6 +6,17 @@ include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_DRIVERS_sourcelist.cmake)
 # Include the platform-specific driver source list
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_DRIVERS_PLATFORM_sourcelist.cmake)
 
+# Convert platform-specific paths to full paths relative to the source directory
+set(GODOT_DRIVERS_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_DRIVERS_ACTIVE_SOURCES})
+  # Check if the path already starts with "drivers/"
+  if(SOURCE_FILE MATCHES "^drivers/")
+    list(APPEND GODOT_DRIVERS_FULL_PATHS "${SOURCE_FILE}")
+  else()
+    list(APPEND GODOT_DRIVERS_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE}")
+  endif()
+endforeach()
+
 # OpenGL ES 3 support
 if(GLES3)
   list(APPEND DRIVERS_DEFINITIONS GLES3_ENABLED)
@@ -73,8 +84,8 @@ endif()
 list(APPEND DRIVERS_DEFINITIONS ${GODOT_DRIVERS_PLATFORM_FLAGS})
 
 # Create drivers library
-# Use the platform-specific sources list instead of the complete list
-add_library(godot_drivers STATIC ${GODOT_DRIVERS_ACTIVE_SOURCES})
+# Use the platform-specific sources list with corrected paths
+add_library(godot_drivers STATIC ${GODOT_DRIVERS_FULL_PATHS})
 
 # Include directories
 target_include_directories(godot_drivers

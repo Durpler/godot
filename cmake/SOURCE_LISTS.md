@@ -38,6 +38,41 @@ The drivers component is special because it contains platform-specific code that
 1. `GODOT_DRIVERS_sourcelist.cmake` - Contains all driver source files (used for reference and headers)
 2. `GODOT_DRIVERS_PLATFORM_sourcelist.cmake` - Contains platform-specific source files organized by platform
 
+### Path Handling for Drivers
+
+The platform-specific driver source files are stored with paths relative to the drivers directory. For example:
+
+```cmake
+# Windows drivers
+set(GODOT_DRIVERS_WINDOWS_SOURCES
+  d3d12/d3d12_hooks.cpp
+  wasapi/audio_driver_wasapi.cpp
+  ...
+)
+```
+
+In the drivers/CMakeLists.txt file, these paths are converted to full paths relative to the source directory:
+
+```cmake
+# Convert platform-specific paths to full paths
+set(GODOT_DRIVERS_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_DRIVERS_ACTIVE_SOURCES})
+  # Check if the path already starts with "drivers/"
+  if(SOURCE_FILE MATCHES "^drivers/")
+    list(APPEND GODOT_DRIVERS_FULL_PATHS "${SOURCE_FILE}")
+  else()
+    list(APPEND GODOT_DRIVERS_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE}")
+  endif()
+endforeach()
+
+# Create the library with correct paths
+add_library(godot_drivers STATIC ${GODOT_DRIVERS_FULL_PATHS})
+```
+
+This approach ensures that the source files are correctly located regardless of the current working directory or the location of the CMakeLists.txt file.
+
+### Platform-Specific Variables
+
 The platform-specific file defines the following variables:
 - `GODOT_DRIVERS_WINDOWS_SOURCES` - Windows-specific driver sources
 - `GODOT_DRIVERS_MACOS_SOURCES` - macOS-specific driver sources
@@ -64,7 +99,7 @@ pwsh cmake/GenerateSourceLists.ps1
 The script does the following:
 1. Scans each component directory for source files
 2. Creates a separate source list file for each component
-3. For drivers, creates both a complete source list and a platform-specific source list
+3. For drivers, creates both a complete source list and a platform-specific source list with paths relative to the drivers directory
 
 ## Using Source Lists in CMakeLists.txt
 
@@ -89,8 +124,14 @@ For drivers, use the platform-specific approach:
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_DRIVERS_sourcelist.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_DRIVERS_PLATFORM_sourcelist.cmake)
 
-# Create the library using the platform-specific sources
-add_library(godot_drivers STATIC ${GODOT_DRIVERS_ACTIVE_SOURCES})
+# Convert paths to full paths
+set(GODOT_DRIVERS_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_DRIVERS_ACTIVE_SOURCES})
+  list(APPEND GODOT_DRIVERS_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/${SOURCE_FILE}")
+endforeach()
+
+# Create the library using the platform-specific sources with correct paths
+add_library(godot_drivers STATIC ${GODOT_DRIVERS_FULL_PATHS})
 ```
 
 ## Modifying the Source List Generator

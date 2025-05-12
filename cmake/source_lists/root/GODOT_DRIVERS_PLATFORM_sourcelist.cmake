@@ -1,25 +1,8 @@
-# Platform-dependent driver source lists for Godot
+# Platform-dependent driver source lists for Godot (root-relative paths)
 # This file organizes driver source files by platform
 
 # Windows drivers
 set(GODOT_DRIVERS_WINDOWS_SOURCES
-  d3d12/d3d12_hooks.cpp
-  d3d12/d3d12ma.cpp
-  d3d12/dxil_hash.cpp
-  d3d12/rendering_context_driver_d3d12.cpp
-  d3d12/rendering_device_driver_d3d12.cpp
-  wasapi/audio_driver_wasapi.cpp
-  windows/dir_access_windows.cpp
-  windows/file_access_windows_pipe.cpp
-  windows/file_access_windows.cpp
-  windows/ip_windows.cpp
-  windows/net_socket_winsock.cpp
-  windows/thread_windows.cpp
-  winmidi/midi_driver_winmidi.cpp
-  xaudio2/audio_driver_xaudio2.cpp
-)
-
-set(GODOT_DRIVERS_WINDOWS_ROOT_SOURCES
   drivers/d3d12/d3d12_hooks.cpp
   drivers/d3d12/d3d12ma.cpp
   drivers/d3d12/dxil_hash.cpp
@@ -38,18 +21,6 @@ set(GODOT_DRIVERS_WINDOWS_ROOT_SOURCES
 
 # macOS drivers
 set(GODOT_DRIVERS_MACOS_SOURCES
-  apple/joypad_apple.mm
-  apple/thread_apple.cpp
-  coreaudio/audio_driver_coreaudio.mm
-  coremidi/midi_driver_coremidi.mm
-  metal/metal_device_properties.mm
-  metal/metal_objects.mm
-  metal/pixel_formats.mm
-  metal/rendering_context_driver_metal.mm
-  metal/rendering_device_driver_metal.mm
-)
-
-set(GODOT_DRIVERS_MACOS_ROOT_SOURCES
   drivers/apple/joypad_apple.mm
   drivers/apple/thread_apple.cpp
   drivers/coreaudio/audio_driver_coreaudio.mm
@@ -63,18 +34,6 @@ set(GODOT_DRIVERS_MACOS_ROOT_SOURCES
 
 # iOS drivers
 set(GODOT_DRIVERS_IOS_SOURCES
-  apple/joypad_apple.mm
-  apple/thread_apple.cpp
-  coreaudio/audio_driver_coreaudio.mm
-  coremidi/midi_driver_coremidi.mm
-  metal/metal_device_properties.mm
-  metal/metal_objects.mm
-  metal/pixel_formats.mm
-  metal/rendering_context_driver_metal.mm
-  metal/rendering_device_driver_metal.mm
-)
-
-set(GODOT_DRIVERS_IOS_ROOT_SOURCES
   drivers/apple/joypad_apple.mm
   drivers/apple/thread_apple.cpp
   drivers/coreaudio/audio_driver_coreaudio.mm
@@ -88,22 +47,6 @@ set(GODOT_DRIVERS_IOS_ROOT_SOURCES
 
 # Linux/Unix drivers
 set(GODOT_DRIVERS_UNIX_SOURCES
-  alsa/asound-so_wrap.c
-  alsa/audio_driver_alsa.cpp
-  alsamidi/midi_driver_alsamidi.cpp
-  pulseaudio/audio_driver_pulseaudio.cpp
-  pulseaudio/pulse-so_wrap.c
-  unix/dir_access_unix.cpp
-  unix/file_access_unix_pipe.cpp
-  unix/file_access_unix.cpp
-  unix/ip_unix.cpp
-  unix/net_socket_unix.cpp
-  unix/os_unix.cpp
-  unix/syslog_logger.cpp
-  unix/thread_posix.cpp
-)
-
-set(GODOT_DRIVERS_UNIX_ROOT_SOURCES
   drivers/alsa/asound-so_wrap.c
   drivers/alsa/audio_driver_alsa.cpp
   drivers/alsamidi/midi_driver_alsamidi.cpp
@@ -121,31 +64,6 @@ set(GODOT_DRIVERS_UNIX_ROOT_SOURCES
 
 # Common drivers for all platforms drivers
 set(GODOT_DRIVERS_COMMON_SOURCES
-  gles3/effects/copy_effects.cpp
-  gles3/effects/cubemap_filter.cpp
-  gles3/effects/feed_effects.cpp
-  gles3/effects/glow.cpp
-  gles3/effects/post_effects.cpp
-  gles3/environment/fog.cpp
-  gles3/environment/gi.cpp
-  gles3/rasterizer_canvas_gles3.cpp
-  gles3/rasterizer_gles3.cpp
-  gles3/rasterizer_scene_gles3.cpp
-  gles3/shader_gles3.cpp
-  gles3/storage/config.cpp
-  gles3/storage/light_storage.cpp
-  gles3/storage/material_storage.cpp
-  gles3/storage/mesh_storage.cpp
-  gles3/storage/particles_storage.cpp
-  gles3/storage/render_scene_buffers_gles3.cpp
-  gles3/storage/texture_storage.cpp
-  gles3/storage/utilities.cpp
-  png/image_loader_png.cpp
-  png/png_driver_common.cpp
-  png/resource_saver_png.cpp
-)
-
-set(GODOT_DRIVERS_COMMON_ROOT_SOURCES
   drivers/gles3/effects/copy_effects.cpp
   drivers/gles3/effects/cubemap_filter.cpp
   drivers/gles3/effects/feed_effects.cpp
@@ -172,12 +90,6 @@ set(GODOT_DRIVERS_COMMON_ROOT_SOURCES
 
 # Vulkan drivers (cross-platform) drivers
 set(GODOT_DRIVERS_VULKAN_SOURCES
-  vulkan/rendering_context_driver_vulkan.cpp
-  vulkan/rendering_device_driver_vulkan.cpp
-  vulkan/vulkan_hooks.cpp
-)
-
-set(GODOT_DRIVERS_VULKAN_ROOT_SOURCES
   drivers/vulkan/rendering_context_driver_vulkan.cpp
   drivers/vulkan/rendering_device_driver_vulkan.cpp
   drivers/vulkan/vulkan_hooks.cpp
@@ -186,7 +98,7 @@ set(GODOT_DRIVERS_VULKAN_ROOT_SOURCES
 # Add platform flags to help with CMake conditionals
 set(GODOT_DRIVERS_PLATFORM_FLAGS)
 
-# Auto-detect which platform-specific sources to use by default (component-relative paths)
+# Auto-detect which platform-specific sources to use by default
 if(WIN32)
   list(APPEND GODOT_DRIVERS_PLATFORM_SOURCES ${GODOT_DRIVERS_WINDOWS_SOURCES})
   list(APPEND GODOT_DRIVERS_PLATFORM_FLAGS WINDOWS_ENABLED)
@@ -217,30 +129,5 @@ if(GLES3)
   list(APPEND GODOT_DRIVERS_PLATFORM_FLAGS GLES3_ENABLED)
 endif()
 
-# Set the final list that can be used in component CMakeLists.txt
+# Set the final list that can be used in CMakeLists.txt
 set(GODOT_DRIVERS_ACTIVE_SOURCES ${GODOT_DRIVERS_PLATFORM_SOURCES})
-
-# Auto-detect which platform-specific sources to use by default (root-relative paths)
-set(GODOT_DRIVERS_ROOT_PLATFORM_SOURCES)
-if(WIN32)
-  list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_WINDOWS_ROOT_SOURCES})
-elseif(APPLE)
-  if(IOS)
-    list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_IOS_ROOT_SOURCES})
-  else()
-    list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_MACOS_ROOT_SOURCES})
-  endif()
-elseif(UNIX)
-  list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_UNIX_ROOT_SOURCES})
-endif()
-
-# Always include common sources (root-relative paths)
-list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_COMMON_ROOT_SOURCES})
-
-# Include Vulkan if enabled (root-relative paths)
-if(VULKAN)
-  list(APPEND GODOT_DRIVERS_ROOT_PLATFORM_SOURCES ${GODOT_DRIVERS_VULKAN_ROOT_SOURCES})
-endif()
-
-# Set the final list that can be used in root CMakeLists.txt
-set(GODOT_DRIVERS_ROOT_ACTIVE_SOURCES ${GODOT_DRIVERS_ROOT_PLATFORM_SOURCES})

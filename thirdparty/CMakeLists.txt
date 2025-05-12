@@ -1,9 +1,29 @@
 # Third-party dependencies
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Include generated source lists
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_THIRDPARTY_MBEDTLS_sourcelist.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_THIRDPARTY_FREETYPE_sourcelist.cmake)
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_THIRDPARTY_ZLIB_sourcelist.cmake)
+
+# Convert relative paths to full paths
+set(MBEDTLS_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_THIRDPARTY_MBEDTLS_SOURCES})
+  list(APPEND MBEDTLS_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/mbedtls/${SOURCE_FILE}")
+endforeach()
+
+set(FREETYPE_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_THIRDPARTY_FREETYPE_SOURCES})
+  list(APPEND FREETYPE_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/freetype/${SOURCE_FILE}")
+endforeach()
+
+set(ZLIB_FULL_PATHS)
+foreach(SOURCE_FILE ${GODOT_THIRDPARTY_ZLIB_SOURCES})
+  list(APPEND ZLIB_FULL_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/zlib/${SOURCE_FILE}")
+endforeach()
 
 # Option to use system libraries where available
 option(USE_SYSTEM_LIBS "Use system libraries instead of bundled ones when possible" OFF)

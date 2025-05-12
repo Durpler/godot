@@ -7,6 +7,7 @@ project(Godot VERSION 4.4.0
 
 # Include all generated source lists
 include(${CMAKE_SOURCE_DIR}/cmake/source_lists/all_sourcelists.cmake)
+include(${CMAKE_SOURCE_DIR}/cmake/source_lists/GODOT_MAIN_sourcelist.cmake)
 
 # Options
 option(TOOLS "Build editor tools" ON)
@@ -47,6 +48,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
   add_compile_definitions(DEBUG_ENABLED)
 endif()
 
+# Find Python for shader compilation on non-Windows platforms
+if(NOT WIN32)
+  find_package(Python3 COMPONENTS Interpreter REQUIRED)
+  set(PYTHON_EXECUTABLE ${Python3_EXECUTABLE})
+endif()
+
 # Add subdirectories for components
 add_subdirectory(thirdparty)
 add_subdirectory(core)
@@ -61,8 +68,11 @@ endif()
 
 add_subdirectory(main)
 
+# debug print GODOT_MAIN_ROOT_SOURCES
+message(STATUS "GODOT_MAIN_ROOT_SOURCES: ${GODOT_MAIN_ROOT_SOURCES}")
+
 # Main executable
-add_executable(godot ${GODOT_MAIN_SOURCES})
+add_executable(godot ${GODOT_MAIN_ROOT_SOURCES})
 
 # Link all components
 target_link_libraries(godot
